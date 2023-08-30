@@ -16,7 +16,6 @@ int caminho[10000][10000];  // utilizado para recuperar quais itens foram escolh
  
 int main()
 {
-    // VARIVAEIS
     int n; // Quantidade de arquivos
     int capacidade = 1460; // Tamanho total
     item v[1000]; // Vetor de itens
@@ -33,7 +32,7 @@ int main()
     como false*/
     for(int i = 0; i < n; i++)
     {
-	    v[i].importancia = 0;
+	v[i].importancia = 0;
         cin >> v[i].tamanho;
         v[i].status = false;
     }
@@ -59,29 +58,26 @@ int main()
             for(int j = 1; j <= capacidade; j++)
             {
             	// Variáveis para escolher se pegar ou nao o item 'i'
-                int pega;
-				int npega; 
- 
+                int pega;		
+		int npega; 
                 npega = pd[i + 1][j]; // Olhar o proximo item, mantendo a capacidade 'j'
  
                 // Se tiver capacidade disponivel p/ pegar o item 'i' e ele ja nao tiver sido pego
                 if(j >= v[i].tamanho && v[i].status == false)
                 {
-                	// Condição para atribuir o valor 1 para casos em que a importância é 0, evitando entrar em looping infinito
-                	if(v[i].importancia == 0)
+                	if(v[i].importancia == 0){
                 		v[i].importancia = 1;
+			}
                     pega = pd[i + 1][j - v[i].tamanho] + v[i].importancia;
                     // Observa o proximo item, subtrair o peso da capacidade
                     // Disponivel, e somar o valor do item 'i'
-
-                    
                 }
                 else
                 {
-                    pega = 0; // Se nao pegar, o valor eh 0
+                    pega = 0;
                 }
  
-                if(pega > npega) // Se valer a pena pegar
+                if(pega > npega)
                 {
                     pd[i][j] = pega;
                     caminho[i][j] = 1;
@@ -92,33 +88,30 @@ int main()
                     pd[i][j] = npega;
                     caminho[i][j] = 0;
                 }
-               
             }
  
         // Saida de Dados
         // Comeca na posicao final
-        int i;
-		int j;
-        i = 0; // Do item 0->final
-        j = capacidade; // Para um pacote de capacidade max
+        int i = 0;
+	int j = capacidade; // Para um pacote de capacidade max
  
-        while(i != n)  // Enquanto nao chegar no ultimo item
+        while(i != n)
         {
-            if(caminho[i][j] == 0) // Caso nesse momento a melhor opcao for nao pegar
+            if(caminho[i][j] == 0)
             {
-                i++; // Avancar para o proximo i, mantendo a capacidade
+                i++;
             }
-            else // If(caminho[i][j] == 1) /// Caso nesse momento a melhor opcao for pegar
+            else // If(caminho[i][j] == 1)
             {
-                cout << i << " "; // Indicar que o item foi pego
+                cout << i << " ";
                 j -= v[i].tamanho; // Diminuir a capacidade disponivel
-                v[i].status = true; //O status é mudado para true, indicando que foi pego
-                i++; // Avancar para o proximo i
+                v[i].status = true;
+                i++; 
                 numItem++; // Incremento na variavel a que representa mais 1 arquivo lido
             }
         }
-        cout << endl; // Cout para organizacao
-        numPacote++; // Incremento na variavel para mostrar o numero do pacote
+        cout << endl;
+        numPacote++;
     }
     
     return 0;
