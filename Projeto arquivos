@@ -1,0 +1,125 @@
+#include <iostream>
+using namespace std;
+struct item
+{
+    int importancia; // Valor de importancia do arquivo
+    int tamanho; // Tamanho em bytes do arquivo
+    bool status; // Status do item (falso ou verdadeiro)
+};
+int pd[10000][10000];   // valor maximo sendo:
+// olhando do item 'i'->final
+// olhando o tamanho do pacote de capacidade 'j'
+ 
+int caminho[10000][10000];  // utilizado para recuperar quais itens foram escolhidos
+// 0 -> nao pegar o item
+// 1 -> pegar o item
+ 
+int main()
+{
+    // VARIVAEIS
+    int n; // Quantidade de arquivos
+    int capacidade = 1460; // Tamanho total
+    item v[1000]; // Vetor de itens
+    int numPacote = 1; // Var auxiliar que mostra o numero do pacote
+    int numItem = 0; // Var auxiliar que mostra o numero de arquivos lidos
+ 
+    // ENTRADA DE DADOS
+ 
+    //Entrada do numero de arquivos
+    cout << "Insira a quantidade de arquivos: ";
+    cin >> n;
+ 
+    /*Entrada da importancia e tamanho dos arquivos e atribuicao de status
+    como false*/
+    for(int i = 0; i < n; i++)
+    {
+	    v[i].importancia = 0;
+        cin >> v[i].tamanho;
+        v[i].status = false;
+    }
+ 
+    // PROCESSAMENTO
+    /*Enquanto o contador a for menor que o numero de arquivos,
+     o trecho é executado */
+    while(numItem != n)
+    {
+        cout << "Pacote: " << numPacote << endl;
+        // CASO BASE:
+ 
+        // olhando do ultimo item para frente, val. maximo = 0
+        for(int j = 0; j <= capacidade; j++)
+            pd[n][j] = 0;
+ 
+        // olhando um pacote de capacidade 0, o val. maximo=0
+        for(int i = 0; i <= n; i++)
+            pd[i][0] = 0;
+ 
+        // CASO GERAL
+        for(int i = n - 1; i >= 0; i--)
+            for(int j = 1; j <= capacidade; j++)
+            {
+            	// Variáveis para escolher se pegar ou nao o item 'i'
+                int pega;
+				int npega; 
+ 
+                npega = pd[i + 1][j]; // Olhar o proximo item, mantendo a capacidade 'j'
+ 
+                // Se tiver capacidade disponivel p/ pegar o item 'i' e ele ja nao tiver sido pego
+                if(j >= v[i].tamanho && v[i].status == false)
+                {
+                	// Condição para atribuir o valor 1 para casos em que a importância é 0, evitando entrar em looping infinito
+                	if(v[i].importancia == 0)
+                		v[i].importancia = 1;
+                    pega = pd[i + 1][j - v[i].tamanho] + v[i].importancia;
+                    // Observa o proximo item, subtrair o peso da capacidade
+                    // Disponivel, e somar o valor do item 'i'
+
+                    
+                }
+                else
+                {
+                    pega = 0; // Se nao pegar, o valor eh 0
+                }
+ 
+                if(pega > npega) // Se valer a pena pegar
+                {
+                    pd[i][j] = pega;
+                    caminho[i][j] = 1;
+                }
+ 
+                else // Se valer a pena nao pegar
+                {
+                    pd[i][j] = npega;
+                    caminho[i][j] = 0;
+                }
+               
+            }
+ 
+        // Saida de Dados
+        // Comeca na posicao final
+        int i;
+		int j;
+        i = 0; // Do item 0->final
+        j = capacidade; // Para um pacote de capacidade max
+ 
+        while(i != n)  // Enquanto nao chegar no ultimo item
+        {
+            if(caminho[i][j] == 0) // Caso nesse momento a melhor opcao for nao pegar
+            {
+                i++; // Avancar para o proximo i, mantendo a capacidade
+            }
+            else // If(caminho[i][j] == 1) /// Caso nesse momento a melhor opcao for pegar
+            {
+                cout << i << " "; // Indicar que o item foi pego
+                j -= v[i].tamanho; // Diminuir a capacidade disponivel
+                v[i].status = true; //O status é mudado para true, indicando que foi pego
+                i++; // Avancar para o proximo i
+                numItem++; // Incremento na variavel a que representa mais 1 arquivo lido
+            }
+        }
+        cout << endl; // Cout para organizacao
+        numPacote++; // Incremento na variavel para mostrar o numero do pacote
+    }
+    
+    return 0;
+}
